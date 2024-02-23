@@ -15,7 +15,7 @@ typedef struct __attribute__((packed)) {
 #define NEOPIXEL_PIN 15 // Pin connected to the NeoPixel
 #define NUM_PIXELS 1    // Number of NeoPixels
 
-Adafruit_NeoPixel pixels(NUM_PIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixelOutput(NUM_PIXELS, NEOPIXEL_PIN, NEO_GRB + NEO_KHZ800);
 
 // Prototype declaration
 void onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len);
@@ -30,9 +30,9 @@ void setup() {
 
   
   // Initialize NeoPixel
-  pixels.begin();
-  pixels.setPixelColor(0, pixels.Color(255, 255, 255)); // Set initial color to white
-  pixels.show();
+  pixelOutput.begin();
+  pixelOutput.setPixelColor(0, pixelOutput.Color(255, 255, 255)); // Set initial color to white
+  pixelOutput.show();
 
   // Initialize Wi-Fi
   WiFi.mode(WIFI_STA);
@@ -74,8 +74,8 @@ void onDataRecv(const uint8_t *mac_addr, const uint8_t *data, int data_len) {
     uint8_t green = receivedData.data[2]; // Third hexadecimal value
     uint8_t blue = receivedData.data[3];  // Fourth hexadecimal value
 
-    pixels.setPixelColor(0, pixels.Color(red, green, blue));
-    pixels.show();
+    pixelOutput.setPixelColor(0, pixelOutput.Color(red, green, blue));
+    pixelOutput.show();
 
     Serial.print("Received data: R=");
     Serial.print(red);

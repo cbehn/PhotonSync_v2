@@ -145,4 +145,11 @@ void sendFade(Pixel startColor, Pixel endColor, int steps, int duration)
     // Delay for a short time to observe the color transition
     delay(stepDelay);
   }
+  esp_err_t result = esp_now_send(broadcastAddress, (uint8_t *)&endColor, sizeof(endColor));
+
+    if (result != ESP_OK)
+    {
+      Serial.println("Error sending color data over ESP-NOW");
+      return;
+    }
 }
