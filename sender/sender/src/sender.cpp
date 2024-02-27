@@ -13,7 +13,7 @@
 
 // Define variables for configuration with default values
 int Channel = 0;
-int Num_Pixels = 3;                     // THe number of Pixels we will be displaying
+int Num_Pixels = 1;                     // THe number of Pixels we will be displaying
 int Pixel_Index = 0;                    // The index of the first pixel we will be displaying
 uint8_t Start_Color[3] = {255, 255, 0}; // Default shows red color to indicated config was not loaded
 uint8_t Receiver_Address[] = {0x11, 0x11, 0x11, 0x11, 0x11, 0x11};
@@ -116,17 +116,18 @@ void loop()
 
   // Send second data: 0, 0, 0, 255
   Pixel blue;
-  blue.index = 0;  // First hexadecimal value
+  blue.index = 1;  // First hexadecimal value
   blue.red = 0;    // Second hexadecimal value
   blue.green = 0;  // Third hexadecimal value
   blue.blue = 255; // Fourth hexadecimal value
 
-  Pixel black = {0, 0, 0, 0};
+  
 
   // Send data to all peers
   if (digitalRead(RED_BUTTON) == HIGH)
   {
     Serial.println("Sending data Red fade");
+    Pixel black = {0, 0, 0, 0};
 
     sendFade(red, black, 50, 1000);
     delay(100);
@@ -134,6 +135,7 @@ void loop()
   else if (digitalRead(BLUE_BUTTON) == HIGH)
   {
     Serial.println("Sending data Blue fade");
+    Pixel black = {1, 0, 0, 0};
 
     sendFade(blue, black, 50, 1000);
     delay(100);
@@ -166,6 +168,8 @@ void sendFade(Pixel startColor, Pixel endColor, int steps, int duration)
   int stepR = (endColor.red - startColor.red) / steps;
   int stepG = (endColor.green - startColor.green) / steps;
   int stepB = (endColor.blue - startColor.blue) / steps;
+  
+  int index = startColor.index;
 
   // Calculate delay between steps
   int stepDelay = duration / steps;
@@ -179,7 +183,7 @@ void sendFade(Pixel startColor, Pixel endColor, int steps, int duration)
     uint8_t b = startColor.blue + (stepB * i);
 
     // Create a Pixel structure to store the current color
-    Pixel currentColor = {0, r, g, b};
+    Pixel currentColor = {index, r, g, b};
 
     // Send the current color data using ESP-NOW
     esp_err_t result = esp_now_send(Receiver_Address, (uint8_t *)&currentColor, sizeof(currentColor));
